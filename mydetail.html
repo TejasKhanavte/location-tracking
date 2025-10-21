@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Location Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    #map {
+      height: 60vh;
+      border-radius: 0.5rem;
+    }
+    #realTimeIndicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .online {
+      background-color: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+    .offline {
+      background-color: #ef4444;
+    }
+    .connecting {
+      background-color: #f59e0b;
+      box-shadow: 0 0 10px #f59e0b;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Real-Time Location Tracker</h1>
+      <p class="text-gray-600">Track authorized mobile devices in real-time</p>
+    </div>
+
+    <!-- Legal Disclaimer -->
+    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-8 rounded">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-red-700">
+            <strong>Important:</strong> This service requires explicit consent from the device owner. Unauthorized tracking may violate privacy laws.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Tracking Interface -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Control Panel -->
+        <div class="w-full md:w-1/3 space-y-6">
+          <div>
+            <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <div class="flex">
+              <input type="tel" id="phoneNumber" placeholder="+1 234 567 890" class="flex-1 block w-full rounded-l-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-4 py-2 border">
+              <button id="verifyBtn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Verify
+              </button>
+            </div>
+          </div>
+
+          <div id="authContainer" class="hidden">
+            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded mb-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm text-green-700">
+                    <span id="authStatus">Verified and authorized</span>
+                    <span id="realTimeIndicator" class="offline"></span>
+                    <span id="connectionStatus">Disconnected</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tracking History</label>
+                <select id="historySelect" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-4 py-2 border">
+                  <option value="">Select a date range</option>
+                  <option value="1h">Last hour</option>
+                  <option value="24h">Last 24 hours</option>
+                  <option value="7d">Last 7 days</option>
+                  <option value="30d">Last 30 days</option>
+                </select>
+              </div>
+
+              <button id="startTrackingBtn" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50" disabled>
+                Start Tracking
+              </button>
+
+              <div id="statusDetails" class="text-sm text-gray-600 space-y-2">
+                <div><span class="font-medium">Last Update:</span> <span id="lastUpdate">Never</span></div>
+                <div><span class="font-medium">Signal Strength:</span> <span id="signalStrength">Unknown</span></div>
+                <div><span class="font-medium">Battery:</span> <span id="batteryStatus">Unknown</span></div>
+                <div id="coordinates" class="hidden">
+                  <span class="font-medium">Coordinates:</span>
+                  <span id="latitude"></span>, <span id="longitude"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="w-full md:w-2/3">
+          <div class="h-full flex flex-col">
+            <div class="flex justify-between items-center mb-2">
+              <h2 class="text-lg font-medium text-gray-900">Location Tracking</h2>
+              <div class="text-sm text-gray-500">
+                <span id="accuracyIndicator" class="hidden">
+                  Accuracy: <span id="accuracyValue">0</span> meters
+                </span>
+              </div>
+            </div>
+            <div id="map"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Section -->
+    <div id="historyContainer" class="hidden">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Location History</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accuracy</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Battery</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody" class="bg-white divide-y divide-gray-200">
+              <!-- History items will be inserted here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize map
+    let map = L.map('map').setView([40.7128, -74.0060], 13); // Start in New York
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = null;
+    let circle = null;
+    let isTracking = false;
+    let locationInterval = null;
+
+    const phoneNumberInput = document.getElementById('phoneNumber');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const authContainer = document.getElementById('authContainer');
+    const startTrackingBtn = document.getElementById('startTrackingBtn');
+    const realTimeIndicator = document.getElementById('realTimeIndicator');
+    const connectionStatus = document.getElementById('connectionStatus');
+    const lastUpdate = document.getElementById('lastUpdate');
+    const signalStrength = document.getElementById('signalStrength');
+    const batteryStatus = document.getElementById('batteryStatus');
+    const accuracyValue = document.getElementById('accuracyValue');
+    const accuracyIndicator = document.getElementById('accuracyIndicator');
+    const latitude = document.getElementById('latitude');
+    const longitude = document.getElementById('longitude');
+    const coordinates = document.getElementById('coordinates');
+    const historyTableBody = document.getElementById('historyTableBody');
+    const historySelect = document.getElementById('historySelect');
+    const historyContainer = document.getElementById('historyContainer');
+
+    verifyBtn.addEventListener('click', () => {
+      const phoneNumber = phoneNumberInput.value.trim();
+      if (!phoneNumber) {
+        alert('Please enter a phone number');
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verifying...';
+
+      setTimeout(() => {
+        verifyBtn.textContent = 'Verified';
+        verifyBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+        verifyBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+        authContainer.classList.remove('hidden');
+        simulateSMS(phoneNumber);
+      }, 1500);
+    });
+
+    function simulateSMS(phoneNumber) {
+      console.log(`Pretending to send verification SMS to ${phoneNumber}`);
+      const verificationCode = Math.floor(1000 + Math.random() * 9000);
+      alert(`DEMO: A verification code (${verificationCode}) would be sent to ${phoneNumber}. This demo auto-accepts it.`);
+      startTrackingBtn.disabled = false;
+      connectionStatus.textContent = 'Ready to connect';
+      realTimeIndicator.classList.remove('offline');
+      realTimeIndicator.classList.add('online');
+    }
+
+    startTrackingBtn.addEventListener('click', () => {
+      if (isTracking) {
+        stopTracking();
+      } else {
+        startTracking();
+      }
+    });
+
+    function startTracking() {
+      isTracking = true;
+      startTrackingBtn.textContent = 'Stop Tracking';
+      simulateLocationUpdates();
+    }
+
+    function stopTracking() {
+      isTracking = false;
+      startTrackingBtn.textContent = 'Start Tracking';
+      if (locationInterval) {
+        clearInterval(locationInterval);
+        locationInterval = null;
+      }
+      connectionStatus.textContent = 'Disconnected';
+      realTimeIndicator.classList.remove('online', 'connecting');
+      realTimeIndicator.classList.add('offline');
+    }
+
+    function simulateLocationUpdates() {
+      if (locationInterval) clearInterval(locationInterval);
+
+      // Starting point: New York City
+      let lat = 40.7128;
+      let lng = -74.0060;
+
+      const simulateData = () => {
+        lat += (Math.random() * 0.005 - 0.0025);
+        lng += (Math.random() * 0.005 - 0.0025);
+        const accuracy = Math.floor(Math.random() * 100) + 30;
+        const battery = Math.floor(Math.random() * 100);
+        const signal = Math.floor(Math.random() * 5) + 1;
+        const timestamp = Date.now();
+
+        updateLocation({
+          latitude: lat,
+          longitude: lng,
+          accuracy,
+          battery,
+          signal,
+          timestamp
+        });
+      };
+
+      simulateData(); // initial
+      locationInterval = setInterval(simulateData, 5000);
+    }
+
+    function updateLocation(data) {
+      if (marker) map.removeLayer(marker);
+      if (circle) map.removeLayer(circle);
+
+      marker = L.marker([data.latitude, data.longitude]).addTo(map).bindPopup('Current Location').openPopup();
+      circle = L.circle([data.latitude, data.longitude], {
+        color: 'blue',
+        fillColor: '#3b82f6',
+        fillOpacity: 0.2,
+        radius: data.accuracy
+      }).addTo(map);
+
+      map.setView([data.latitude, data.longitude], 16);
+
+      lastUpdate.textContent = new Date(data.timestamp).toLocaleTimeString();
+      signalStrength.textContent = `${data.signal}/5 bars`;
+      batteryStatus.textContent = `${data.battery}%`;
+      accuracyValue.textContent = data.accuracy;
+      accuracyIndicator.classList.remove('hidden');
+      latitude.textContent = data.latitude.toFixed(6);
+      longitude.textContent = data.longitude.toFixed(6);
+      coordinates.classList.remove('hidden');
+
+      appendToHistory(data);
+    }
+
+    function appendToHistory(data) {
+      const row = document.createElement('tr');
+
+      const timeCell = document.createElement('td');
+      timeCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+      timeCell.textContent = new Date(data.timestamp).toLocaleString();
+
+      const locationCell = document.createElement('td');
+      locationCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+      locationCell.textContent = `${data.latitude.toFixed(6)}, ${data.longitude.toFixed(6)}`;
+
+      const accuracyCell = document.createElement('td');
+      accuracyCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+      accuracyCell.textContent = `${data.accuracy} meters`;
+
+      const batteryCell = document.createElement('td');
+      batteryCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+      batteryCell.textContent = `${data.battery}%`;
+
+      row.appendChild(timeCell);
+      row.appendChild(locationCell);
+      row.appendChild(accuracyCell);
+      row.appendChild(batteryCell);
+
+      if (historyTableBody.firstChild) {
+        historyTableBody.insertBefore(row, historyTableBody.firstChild);
+      } else {
+        historyTableBody.appendChild(row);
+      }
+
+      historyContainer.classList.remove('hidden');
+    }
+
+    historySelect.addEventListener('change', (e) => {
+      const range = e.target.value;
+      console.log(`History range selected: ${range}`);
+      // In real app, fetch history from backend
+    });
+
+    // Layout adjustment for mobile
+    window.addEventListener('resize', () => {
+      document.body.style.paddingTop = window.innerWidth < 768 ? '0' : '';
+    });
+  </script>
+</body>
+</html>
