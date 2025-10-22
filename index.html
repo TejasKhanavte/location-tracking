@@ -2,11 +2,14 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real-Time Location Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Real-Time Location Tracker - Multiple Cities</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     #map {
@@ -56,24 +59,37 @@
 <body class="bg-gray-100 min-h-screen">
   <div class="container mx-auto px-4 py-8 max-w-5xl">
     <div class="text-center mb-10">
-      <h1 class="text-3xl font-bold text-gray-800 mb-2">Real-Time Location Tracker</h1>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">
+        Real-Time Location Tracker
+      </h1>
       <p class="text-gray-600">Track authorized mobile devices in real-time</p>
     </div>
 
     <!-- Legal Disclaimer -->
-    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-8 rounded">
+    <div
+      class="bg-red-50 border-l-4 border-red-500 p-4 mb-8 rounded"
+      role="alert"
+    >
       <div class="flex">
         <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd"
+          <svg
+            class="h-5 w-5 text-red-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
               d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-              clip-rule="evenodd" />
+              clip-rule="evenodd"
+            />
           </svg>
         </div>
         <div class="ml-3">
           <p class="text-sm text-red-700">
-            <strong>Important:</strong> This service requires explicit consent from the device owner. Unauthorized
-            tracking may violate privacy laws.
+            <strong>Important:</strong> This service requires explicit consent
+            from the device owner. Unauthorized tracking may violate privacy
+            laws.
           </p>
         </div>
       </div>
@@ -85,26 +101,44 @@
         <!-- Control Panel -->
         <div class="w-full md:w-1/3 space-y-6">
           <div>
-            <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <label
+              for="phoneNumber"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Phone Number</label
+            >
             <div class="flex">
-              <input type="tel" id="phoneNumber" placeholder="+91 9876543210"
-                class="flex-1 block w-full rounded-l-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-4 py-2 border">
-              <button id="verifyBtn"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              <input
+                type="tel"
+                id="phoneNumber"
+                placeholder="+91 9876543210"
+                class="flex-1 block w-full rounded-l-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-4 py-2 border"
+              />
+              <button
+                id="verifyBtn"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
                 Verify
               </button>
             </div>
           </div>
 
           <div id="authContainer" class="hidden">
-            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded mb-4">
+            <div
+              class="bg-green-50 border-l-4 border-green-500 p-4 rounded mb-4"
+            >
               <div class="flex">
                 <div class="flex-shrink-0">
-                  <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
+                  <svg
+                    class="h-5 w-5 text-green-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd" />
+                      clip-rule="evenodd"
+                    />
                   </svg>
                 </div>
                 <div class="ml-3">
@@ -119,9 +153,14 @@
 
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tracking History</label>
-                <select id="historySelect"
-                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-4 py-2 border">
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Tracking History</label
+                >
+                <select
+                  id="historySelect"
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-4 py-2 border"
+                >
                   <option value="">Select a date range</option>
                   <option value="1h">Last hour</option>
                   <option value="24h">Last 24 hours</option>
@@ -130,19 +169,37 @@
                 </select>
               </div>
 
-              <button id="startTrackingBtn"
+              <button
+                id="startTrackingBtn"
                 class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-                disabled>
+                disabled
+              >
                 Start Tracking
               </button>
 
-              <div id="statusDetails" class="text-sm text-gray-600 space-y-2">
-                <div><span class="font-medium">Last Update:</span> <span id="lastUpdate">Never</span></div>
-                <div><span class="font-medium">Signal Strength:</span> <span id="signalStrength">Unknown</span></div>
-                <div><span class="font-medium">Battery:</span> <span id="batteryStatus">Unknown</span></div>
+              <div
+                id="statusDetails"
+                class="text-sm text-gray-600 space-y-2"
+              >
+                <div>
+                  <span class="font-medium">Last Update:</span>
+                  <span id="lastUpdate">Never</span>
+                </div>
+                <div>
+                  <span class="font-medium">Signal Strength:</span>
+                  <span id="signalStrength">Unknown</span>
+                </div>
+                <div>
+                  <span class="font-medium">Battery:</span>
+                  <span id="batteryStatus">Unknown</span>
+                </div>
                 <div id="coordinates" class="hidden">
                   <span class="font-medium">Coordinates:</span>
                   <span id="latitude"></span>, <span id="longitude"></span>
+                </div>
+                <div id="cityName" class="hidden">
+                  <span class="font-medium">City:</span>
+                  <span id="cityDisplay"></span>
                 </div>
               </div>
             </div>
@@ -153,7 +210,9 @@
         <div class="w-full md:w-2/3">
           <div class="h-full flex flex-col">
             <div class="flex justify-between items-center mb-2">
-              <h2 class="text-lg font-medium text-gray-900">Location Tracking</h2>
+              <h2 class="text-lg font-medium text-gray-900">
+                Location Tracking
+              </h2>
               <div class="text-sm text-gray-500">
                 <span id="accuracyIndicator" class="hidden">
                   Accuracy: <span id="accuracyValue">0</span> meters
@@ -169,22 +228,46 @@
     <!-- History Section -->
     <div id="historyContainer" class="hidden">
       <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">Location History</h2>
+        <h2 class="text-lg font-medium text-gray-900 mb-4">
+          Location History
+        </h2>
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
+          <table
+            class="min-w-full divide-y divide-gray-200"
+            aria-label="Location history table"
+          >
             <thead class="bg-gray-50">
               <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Time</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Location</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Accuracy</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Battery</th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Time
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Location
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Accuracy
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Battery
+                </th>
               </tr>
             </thead>
-            <tbody id="historyTableBody" class="bg-white divide-y divide-gray-200">
+            <tbody
+              id="historyTableBody"
+              class="bg-white divide-y divide-gray-200"
+            >
               <!-- History items will be inserted here -->
             </tbody>
           </table>
@@ -194,189 +277,323 @@
   </div>
 
   <script>
-    // Initialize map centered on New Delhi, India
-    let map = L.map('map').setView([28.6139, 77.2090], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    // Initialize
 
-    let marker = null;
-    let circle = null;
-    let isTracking = false;
-    let locationInterval = null;
+  // Cities with base lat/lng
+  const cities = {
+    Mumbai: { lat: 19.076, lng: 72.8777 },
+    Delhi: { lat: 28.7041, lng: 77.1025 },
+    Bangalore: { lat: 12.9716, lng: 77.5946 },
+    Chennai: { lat: 13.0827, lng: 80.2707 },
+    Kolkata: { lat: 22.5726, lng: 88.3639 },
+    Hyderabad: { lat: 17.385, lng: 78.4867 },
+  };
 
-    const phoneNumberInput = document.getElementById('phoneNumber');
-    const verifyBtn = document.getElementById('verifyBtn');
-    const authContainer = document.getElementById('authContainer');
-    const startTrackingBtn = document.getElementById('startTrackingBtn');
-    const realTimeIndicator = document.getElementById('realTimeIndicator');
-    const connectionStatus = document.getElementById('connectionStatus');
-    const lastUpdate = document.getElementById('lastUpdate');
-    const signalStrength = document.getElementById('signalStrength');
-    const batteryStatus = document.getElementById('batteryStatus');
-    const accuracyValue = document.getElementById('accuracyValue');
-    const accuracyIndicator = document.getElementById('accuracyIndicator');
-    const latitude = document.getElementById('latitude');
-    const longitude = document.getElementById('longitude');
-    const coordinates = document.getElementById('coordinates');
-    const historyTableBody = document.getElementById('historyTableBody');
-    const historySelect = document.getElementById('historySelect');
-    const historyContainer = document.getElementById('historyContainer');
+  // Colors for markers - cycle through if more devices than colors
+  const markerColors = [
+    "red",
+    "blue",
+    "green",
+    "orange",
+    "purple",
+    "darkred",
+    "cadetblue",
+  ];
 
-    verifyBtn.addEventListener('click', () => {
-      const phoneNumber = phoneNumberInput.value.trim();
-      if (!phoneNumber) {
-        alert('Please enter a phone number');
+  // Map phone numbers to city and device data
+  let devices = {};
+
+  // Initialize map centered on India
+  const map = L.map("map").setView([20.5937, 78.9629], 5);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 18,
+    attribution:
+      '© OpenStreetMap contributors',
+  }).addTo(map);
+
+  // Helper: assign city based on phone number hash
+  function getCityForNumber(phone) {
+    // Simple hash: sum char codes mod number of cities
+    let sum = 0;
+    for (let i = 0; i < phone.length; i++) {
+      sum += phone.charCodeAt(i);
+    }
+    const cityNames = Object.keys(cities);
+    return cityNames[sum % cityNames.length];
+  }
+
+  // Helper: get marker icon of specific color
+  function getColoredMarker(color) {
+    // Using Leaflet's awesome markers or simple colored marker icon
+    return L.icon({
+      iconUrl:
+        `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+      shadowUrl:
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+  }
+
+  // Helper: random nearby point within ~0.02 degrees lat/lng (~2 km)
+  function getRandomNearbyPoint(lat, lng) {
+    const latOffset = (Math.random() - 0.5) * 0.04;
+    const lngOffset = (Math.random() - 0.5) * 0.04;
+    return {
+      lat: lat + latOffset,
+      lng: lng + lngOffset,
+    };
+  }
+
+  // Elements
+  const phoneInput = document.getElementById("phoneNumber");
+  const verifyBtn = document.getElementById("verifyBtn");
+  const authContainer = document.getElementById("authContainer");
+  const authStatus = document.getElementById("authStatus");
+  const connectionStatus = document.getElementById("connectionStatus");
+  const realTimeIndicator = document.getElementById("realTimeIndicator");
+  const startTrackingBtn = document.getElementById("startTrackingBtn");
+  const lastUpdate = document.getElementById("lastUpdate");
+  const signalStrength = document.getElementById("signalStrength");
+  const batteryStatus = document.getElementById("batteryStatus");
+  const latitudeElem = document.getElementById("latitude");
+  const longitudeElem = document.getElementById("longitude");
+  const coordinatesDiv = document.getElementById("coordinates");
+  const cityDisplay = document.getElementById("cityDisplay");
+  const cityNameDiv = document.getElementById("cityName");
+  const historySelect = document.getElementById("historySelect");
+  const historyContainer = document.getElementById("historyContainer");
+  const historyTableBody = document.getElementById("historyTableBody");
+
+  // Verify phone number format and authorize
+  verifyBtn.addEventListener("click", () => {
+    const phone = phoneInput.value.trim();
+    if (!phone) {
+      alert("Please enter a phone number.");
+      return;
+    }
+    // Simple phone validation: starts with + and digits (can be improved)
+    if (!/^\+\d{10,15}$/.test(phone)) {
+      alert(
+        "Invalid phone number format. Please enter in format +911234567890"
+      );
+      return;
+    }
+
+    if (!devices[phone]) {
+      // Assign city & initial location
+      const city = getCityForNumber(phone);
+      const baseLoc = cities[city];
+      const initialLoc = getRandomNearbyPoint(baseLoc.lat, baseLoc.lng);
+
+      // Assign marker color (cycle)
+      const deviceCount = Object.keys(devices).length;
+      const color = markerColors[deviceCount % markerColors.length];
+
+      // Create device object
+      devices[phone] = {
+        phone,
+        city,
+        baseLoc,
+        currentLoc: initialLoc,
+        marker: L.marker(initialLoc, { icon: getColoredMarker(color) }).addTo(
+          map
+        ),
+        polyline: L.polyline([initialLoc], { color }).addTo(map),
+        tracking: false,
+        history: [], // store { timestamp, lat, lng, accuracy, battery }
+        battery: 100,
+      };
+
+      devices[phone].marker.bindPopup(
+        `<b>${phone}</b><br>City: ${city}`
+      );
+    }
+
+    // Show auth UI
+    authContainer.classList.remove("hidden");
+    authStatus.textContent = `Verified and authorized (${phone})`;
+    connectionStatus.textContent = "Disconnected";
+    realTimeIndicator.className = "offline";
+    startTrackingBtn.disabled = false;
+    cityDisplay.textContent = devices[phone].city;
+    cityNameDiv.classList.remove("hidden");
+    coordinatesDiv.classList.add("hidden");
+    lastUpdate.textContent = "Never";
+    signalStrength.textContent = "Unknown";
+    batteryStatus.textContent = "100%";
+    historyContainer.classList.add("hidden");
+    historySelect.value = "";
+
+    // Center map on this device initial location
+    map.setView(devices[phone].currentLoc, 13);
+  });
+
+  // Simulate device data updates every 5 seconds
+  function simulateDeviceUpdate(device) {
+    if (!device.tracking) return;
+
+    // Move location randomly nearby base city
+    const newLoc = getRandomNearbyPoint(device.currentLoc.lat, device.currentLoc.lng);
+
+    device.currentLoc = newLoc;
+
+    // Update battery (drain 1-3%)
+    device.battery -= Math.random() * 2 + 1;
+    if (device.battery < 5) device.battery = 100; // recharge
+
+    // Update marker position
+    device.marker.setLatLng(newLoc);
+
+    // Update polyline (tracking path)
+    device.polyline.addLatLng(newLoc);
+
+    // Add to history
+    const timestamp = new Date();
+    const accuracy = Math.floor(Math.random() * 30) + 5; // meters
+    device.history.push({
+      timestamp,
+      lat: newLoc.lat,
+      lng: newLoc.lng,
+      accuracy,
+      battery: Math.floor(device.battery),
+    });
+
+    // Update popup content
+    device.marker.setPopupContent(
+      `<b>${device.phone}</b><br>City: ${device.city}<br>
+      Battery: ${Math.floor(device.battery)}%<br>
+      Accuracy: ${accuracy}m<br>
+      Updated: ${timestamp.toLocaleTimeString()}`
+    );
+  }
+
+  // Start tracking button click
+  startTrackingBtn.addEventListener("click", () => {
+    const phone = phoneInput.value.trim();
+    if (!devices[phone]) {
+      alert("Please verify a phone number first.");
+      return;
+    }
+    const device = devices[phone];
+    if (device.tracking) {
+      // Stop tracking
+      device.tracking = false;
+      startTrackingBtn.textContent = "Start Tracking";
+      connectionStatus.textContent = "Disconnected";
+      realTimeIndicator.className = "offline";
+      coordinatesDiv.classList.add("hidden");
+      historyContainer.classList.add("hidden");
+      return;
+    }
+
+    // Start tracking
+    device.tracking = true;
+    startTrackingBtn.textContent = "Stop Tracking";
+    connectionStatus.textContent = "Connecting...";
+    realTimeIndicator.className = "connecting";
+
+    // After 2 seconds "connected"
+    setTimeout(() => {
+      if (!device.tracking) return;
+      connectionStatus.textContent = "Online";
+      realTimeIndicator.className = "online";
+      coordinatesDiv.classList.remove("hidden");
+      batteryStatus.textContent = Math.floor(device.battery) + "%";
+    }, 2000);
+
+    // Update location every 5 seconds
+    device.updateInterval = setInterval(() => {
+      if (!device.tracking) {
+        clearInterval(device.updateInterval);
+        connectionStatus.textContent = "Disconnected";
+        realTimeIndicator.className = "offline";
         return;
       }
 
-      verifyBtn.disabled = true;
-      verifyBtn.textContent = 'Verifying...';
+      simulateDeviceUpdate(device);
 
-      setTimeout(() => {
-        verifyBtn.textContent = 'Verified';
-        verifyBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-        verifyBtn.classList.add('bg-green-600', 'hover:bg-green-700');
-        authContainer.classList.remove('hidden');
-        simulateSMS(phoneNumber);
-      }, 1500);
-    });
+      const loc = device.currentLoc;
+      latitudeElem.textContent = loc.lat.toFixed(5);
+      longitudeElem.textContent = loc.lng.toFixed(5);
+      lastUpdate.textContent = new Date().toLocaleTimeString();
 
-    function simulateSMS(phoneNumber) {
-      console.log(`Pretending to send verification SMS to ${phoneNumber}`);
-      const verificationCode = Math.floor(1000 + Math.random() * 9000);
-      alert(`DEMO: A verification code (${verificationCode}) would be sent to ${phoneNumber}. This demo auto-accepts it.`);
-      startTrackingBtn.disabled = false;
-      connectionStatus.textContent = 'Ready to connect';
-      realTimeIndicator.classList.remove('offline');
-      realTimeIndicator.classList.add('online');
+      // Signal strength simulated 50-100%
+      const signal = Math.floor(Math.random() * 50) + 50;
+      signalStrength.textContent = signal + "%";
+
+      batteryStatus.textContent = Math.floor(device.battery) + "%";
+
+      // Center map on device
+      map.panTo(loc);
+    }, 5000);
+  });
+
+  // History select change
+  historySelect.addEventListener("change", () => {
+    const phone = phoneInput.value.trim();
+    if (!devices[phone]) return;
+
+    const device = devices[phone];
+    const range = historySelect.value;
+    if (!range) {
+      historyContainer.classList.add("hidden");
+      return;
     }
 
-    startTrackingBtn.addEventListener('click', () => {
-      if (isTracking) {
-        stopTracking();
-      } else {
-        startTracking();
-      }
-    });
+    const now = new Date();
+    let startTime;
 
-    function startTracking() {
-      isTracking = true;
-      startTrackingBtn.textContent = 'Stop Tracking';
-      simulateLocationUpdates();
+    switch (range) {
+      case "1h":
+        startTime = new Date(now.getTime() - 1 * 60 * 60 * 1000);
+        break;
+      case "24h":
+        startTime = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case "7d":
+        startTime = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case "30d":
+        startTime = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        startTime = null;
     }
 
-    function stopTracking() {
-      isTracking = false;
-      startTrackingBtn.textContent = 'Start Tracking';
-      if (locationInterval) {
-        clearInterval(locationInterval);
-        locationInterval = null;
-      }
-      connectionStatus.textContent = 'Disconnected';
-      realTimeIndicator.classList.remove('online', 'connecting');
-      realTimeIndicator.classList.add('offline');
+    // Filter history by time range
+    const filtered = device.history.filter(
+      (h) => !startTime || h.timestamp >= startTime
+    );
+
+    // Sort descending time
+    filtered.sort((a, b) => b.timestamp - a.timestamp);
+
+    // Fill table
+    historyTableBody.innerHTML = "";
+    if (filtered.length === 0) {
+      historyTableBody.innerHTML =
+        '<tr><td colspan="4" class="text-center py-4">No history data for selected range</td></tr>';
+    } else {
+      filtered.forEach((entry) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="px-6 py-2 whitespace-nowrap">${entry.timestamp.toLocaleString()}</td>
+          <td class="px-6 py-2 whitespace-nowrap">${entry.lat.toFixed(
+            5
+          )}, ${entry.lng.toFixed(5)}</td>
+          <td class="px-6 py-2 whitespace-nowrap">${entry.accuracy} m</td>
+          <td class="px-6 py-2 whitespace-nowrap">${entry.battery}%</td>
+        `;
+        historyTableBody.appendChild(tr);
+      });
     }
 
-    function simulateLocationUpdates() {
-      if (locationInterval) clearInterval(locationInterval);
-
-      // Starting point: New Delhi, India
-      let lat = 28.6139;
-      let lng = 77.2090;
-
-      const simulateData = () => {
-        lat += (Math.random() * 0.005 - 0.0025);
-        lng += (Math.random() * 0.005 - 0.0025);
-        const accuracy = Math.floor(Math.random() * 100) + 30;
-        const battery = Math.floor(Math.random() * 100);
-        const signal = Math.floor(Math.random() * 5) + 1;
-        const timestamp = Date.now();
-
-        updateLocation({
-          latitude: lat,
-          longitude: lng,
-          accuracy,
-          battery,
-          signal,
-          timestamp
-        });
-      };
-
-      simulateData(); // Initial update
-      locationInterval = setInterval(simulateData, 5000);
-    }
-
-    function updateLocation(data) {
-      if (marker) map.removeLayer(marker);
-      if (circle) map.removeLayer(circle);
-
-      marker = L.marker([data.latitude, data.longitude]).addTo(map).bindPopup('Current Location').openPopup();
-      circle = L.circle([data.latitude, data.longitude], {
-        color: 'blue',
-        fillColor: '#3b82f6',
-        fillOpacity: 0.2,
-        radius: data.accuracy
-      }).addTo(map);
-
-      map.setView([data.latitude, data.longitude], 16);
-
-      lastUpdate.textContent = new Date(data.timestamp).toLocaleTimeString();
-      signalStrength.textContent = `${data.signal}/5 bars`;
-      batteryStatus.textContent = `${data.battery}%`;
-      accuracyValue.textContent = data.accuracy;
-      accuracyIndicator.classList.remove('hidden');
-      latitude.textContent = data.latitude.toFixed(6);
-      longitude.textContent = data.longitude.toFixed(6);
-      coordinates.classList.remove('hidden');
-
-      appendToHistory(data);
-    }
-
-    function appendToHistory(data) {
-      const row = document.createElement('tr');
-
-      const timeCell = document.createElement('td');
-      timeCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
-      timeCell.textContent = new Date(data.timestamp).toLocaleString();
-
-      const locationCell = document.createElement('td');
-      locationCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
-      locationCell.textContent = `${data.latitude.toFixed(6)}, ${data.longitude.toFixed(6)}`;
-
-      const accuracyCell = document.createElement('td');
-      accuracyCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
-      accuracyCell.textContent = `${data.accuracy} meters`;
-
-      const batteryCell = document.createElement('td');
-      batteryCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
-      batteryCell.textContent = `${data.battery}%`;
-
-      row.appendChild(timeCell);
-      row.appendChild(locationCell);
-      row.appendChild(accuracyCell);
-      row.appendChild(batteryCell);
-
-      if (historyTableBody.firstChild) {
-        historyTableBody.insertBefore(row, historyTableBody.firstChild);
-      } else {
-        historyTableBody.appendChild(row);
-      }
-
-      historyContainer.classList.remove('hidden');
-    }
-
-    historySelect.addEventListener('change', (e) => {
-      const range = e.target.value;
-      console.log(`History range selected: ${range}`);
-      // Placeholder for real history fetching
-    });
-
-    // Mobile layout tweaks
-    window.addEventListener('resize', () => {
-      document.body.style.paddingTop = window.innerWidth < 768 ? '0' : '';
-    });
-  </script>
+    historyContainer.classList.remove("hidden");
+  });
+</script>
 </body>
-
 </html>
